@@ -1,29 +1,15 @@
 import { useState } from "react";
 import { useEffect } from "react"
 import MealItem from "./MealItem";
+import useFetch from "../hooks/useFetch";
 
 export default function Meals() {
-    const [meals, setMeals] = useState([]);
-    const [error, setError] = useState();
-    const [isFetching, setIsFetching] = useState();
+    const {
+        data : meals,
+        error,
+        isFetching
+    } = useFetch([],"/meals");
 
-    useEffect(()=>{
-        async function fetchMeals() {
-            setIsFetching(true);
-            try {
-                const response = await fetch("http://localhost:3000/meals");
-                const mealsData = await response.json();
-                // console.log(meals);
-                setMeals(mealsData);
-                setIsFetching(false);
-            } catch(error) {
-                setError(error.message || 'Something went wrong, please try later..')
-                setIsFetching(false);
-            }
-            
-        }
-        fetchMeals();
-    },[])
     if(error) {
         return <p>{error.message}</p>
     }

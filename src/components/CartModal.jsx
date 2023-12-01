@@ -1,6 +1,9 @@
-export default function Cart() {
-    return (
-        <div>
+import { createPortal } from "react-dom"
+
+
+export default function CartModal() {
+    return createPortal(
+        <dialog>
             <h2>Your Cart</h2>
             <ol>
                 <li>Item</li>
@@ -8,10 +11,11 @@ export default function Cart() {
             <div>
                 Total
             </div>
-            <div>
+            <form method="dialog">
                 <button>Close</button>
                 <button>Go To Checkout</button>
-            </div>
-        </div>
+            </form>
+        </dialog>,
+        document.getElementById('modal')
     )
 } 
