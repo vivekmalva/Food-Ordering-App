@@ -2,22 +2,22 @@ import { createContext, useReducer } from "react";
 import useFetch from "../hooks/useFetch";
 
 export const CartContext = createContext({
-    items:[],
-    addToCart:()=>{}
+    items: [],
+    addToCart: () => { }
 });
 
 
-const mealsCartReducer = (state, action)=>{
-    if(action.type === 'ADD_TO_CART') {
+const mealsCartReducer = (state, action) => {
+    if (action.type === 'ADD_TO_CART') {
         const cartItems = [...state.items];
         const availableMeals = action.payload.availableMeals;
         // console.log("cartItems",cartItems)
-        const itemIndex = cartItems.findIndex((item)=>item.id === action.payload.mealId);
-        if(itemIndex === -1) {
+        const itemIndex = cartItems.findIndex((item) => item.id === action.payload.mealId);
+        if (itemIndex === -1) {
             // new item
-            const newItem = availableMeals.find((meal)=>meal.id===action.payload.mealId);
+            const newItem = availableMeals.find((meal) => meal.id === action.payload.mealId);
             cartItems.push({
-                id:newItem.id,
+                id: newItem.id,
                 name: newItem.name,
                 price: newItem.price,
                 quantity: 1
@@ -27,32 +27,32 @@ const mealsCartReducer = (state, action)=>{
             const existingCartItem = cartItems[itemIndex];
             const updatedCartItem = {
                 ...existingCartItem,
-                quantity : existingCartItem.quantity + 1
+                quantity: existingCartItem.quantity + 1
             };
 
             cartItems[itemIndex] = updatedCartItem;
         }
         console.log("cartItems", cartItems)
-        return {items: cartItems}
+        return { items: cartItems }
 
     }
     return state;
 }
-export default function CartContextProvider ({children}){
+export default function CartContextProvider({ children }) {
     const [mealsCartState, mealCartDispatcher] = useReducer(mealsCartReducer, {
         items: []
     });
-    const {data : availableMeals} = useFetch([],"/meals");
+    const { data: availableMeals } = useFetch([], "/meals");
 
-    const handleAddToCart = (mealId)=>{
+    const handleAddToCart = (mealId) => {
         console.log("Added To Cart", mealId);
         mealCartDispatcher({
             type: 'ADD_TO_CART',
-            payload: {mealId, availableMeals}
+            payload: { mealId, availableMeals }
         })
     }
-    const handleUpdateCart = ()=>{
-        console.log("Cart updated")
+    const handleUpdateCart = (actionType) => {
+        console.log("Cart updated", actionType);
     }
     const ctxValue = {
         items: mealsCartState.items,

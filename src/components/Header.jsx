@@ -4,23 +4,26 @@ import CartModal from './CartModal';
 
 import { useContext, useRef, useState } from 'react';
 export default function Header() {
-    const {items} = useContext(CartContext);
+    const { items } = useContext(CartContext);
+    let totalCartItems = 0;
+    items.map((item) => {
+        totalCartItems += item.quantity
+    })
     const [showModal, setShowModal] = useState(false);
     const cartModal = useRef();
-    // console.log(items);
-    const handleCartBtnClick = ()=>{
-        console.log("cart btn click")
+    const handleCartBtnClick = () => {
+        cartModal.current.showModal();
     }
     return (
         <>
-            <CartModal ref={cartModal}/>
+            <CartModal ref={cartModal} />
             <header id='main-header'>
                 <div id='title'>
-                    <img src={Logo}/>
+                    <img src={Logo} />
                     <h1>Food Ordering App</h1>
                 </div>
                 <div>
-                    <button className='text-button' onClick={handleCartBtnClick}>Cart({items.length})</button>
+                    <button className='text-button' onClick={handleCartBtnClick}>Cart({totalCartItems})</button>
                 </div>
             </header>
         </>
