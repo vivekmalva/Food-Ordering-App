@@ -5,20 +5,20 @@ import useFetch from "../hooks/useFetch";
 
 export default function Meals() {
     const {
-        data : meals,
+        data: meals,
         error,
         isFetching
-    } = useFetch([],"/meals");
-
-    if(error) {
+    } = useFetch([], "/meals");
+    console.log("Meals")
+    if (error) {
         return <p>{error.message}</p>
     }
     return (
         <div id="meals">
             {isFetching && <p>Loading Meal Items...</p>}
-            {!isFetching && meals.length > 0 &&  
-                meals.map((meal)=>{
-                     return <MealItem key={meal.id} meal={meal}/>
+            {!isFetching && meals.length > 0 &&
+                meals.map((meal) => {
+                    return <MealItem key={meal.id} meal={meal} />
                 })
             }
         </div>

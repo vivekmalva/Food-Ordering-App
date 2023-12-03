@@ -11,7 +11,6 @@ const mealsCartReducer = (state, action) => {
     if (action.type === 'ADD_TO_CART') {
         const cartItems = [...state.items];
         const availableMeals = action.payload.availableMeals;
-        // console.log("cartItems",cartItems)
         const itemIndex = cartItems.findIndex((item) => item.id === action.payload.mealId);
         if (itemIndex === -1) {
             // new item
@@ -32,9 +31,34 @@ const mealsCartReducer = (state, action) => {
 
             cartItems[itemIndex] = updatedCartItem;
         }
-        console.log("cartItems", cartItems)
+        // console.log("cartItems", cartItems)
         return { items: cartItems }
 
+    }
+    if (action.type === 'UPDATE_CART') {
+        let cartItems = [...state.items];
+        const cartAction = action.payload.cartAction;
+        const itemIndex = cartItems.findIndex((item) => item.id === action.payload.mealId);
+        const cartItem = cartItems[itemIndex];
+        let updatedCartItem;
+        if (cartAction === "decreaseQuantity") {
+            updatedCartItem = {
+                ...cartItem, quantity: cartItem.quantity - 1
+            }
+            if (updatedCartItem.quantity) {
+                cartItems[itemIndex] = updatedCartItem;
+            }
+            else {
+                cartItems = cartItems.filter((item) => item.id !== action.payload.mealId);
+            }
+        }
+        if (cartAction === "increaseQuantity") {
+            updatedCartItem = {
+                ...cartItem, quantity: cartItem.quantity + 1
+            }
+            cartItems[itemIndex] = updatedCartItem;
+        }
+        return { items: cartItems }
     }
     return state;
 }
@@ -45,14 +69,16 @@ export default function CartContextProvider({ children }) {
     const { data: availableMeals } = useFetch([], "/meals");
 
     const handleAddToCart = (mealId) => {
-        console.log("Added To Cart", mealId);
         mealCartDispatcher({
             type: 'ADD_TO_CART',
             payload: { mealId, availableMeals }
         })
     }
-    const handleUpdateCart = (actionType) => {
-        console.log("Cart updated", actionType);
+    const handleUpdateCart = (cartAction, mealId) => {
+        mealCartDispatcher({
+            type: 'UPDATE_CART',
+            payload: { cartAction, mealId }
+        })
     }
     const ctxValue = {
         items: mealsCartState.items,
